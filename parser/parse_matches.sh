@@ -122,7 +122,7 @@ CREATE VIEW vw_game_modes AS
         ('br_88',                     'wz', 'wz_duos',         'Duos',                   false, false, true),
         ('br_brtrios',                'wz', 'wz_trios',        'Trios',                  false, false, true),
         ('br_25',                     'wz', 'wz_trios',        'Trios',                  false, false, true),
-        ('br_74',                     'wz', 'wz_solo',         'Trios',                  false, false, true),
+        ('br_74',                     'wz', 'wz_trios',        'Trios',                  false, false, true),
         ('br_brquads',                'wz', 'wz_quads',        'Quads',                  false, false, true),
         ('br_89',                     'wz', 'wz_quads',        'Quads',                  false, false, true),
 
