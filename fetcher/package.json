@@ -1,0 +1,21 @@
+{
+  "name": "fetcher",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "dependencies": {
+    "call-of-duty-api": "^1.2.15"
+  },
+  "devDependencies": {
+    "@types/node": "^14.0.13",
+    "typescript": "^3.9.2"
+  },
+  "scripts": {
+    "main": "index.js",
+    "build": "./node_modules/.bin/tsc fetch_matches.ts",
+    "query-player": "./node_modules/.bin/tsc query_player.ts && node query_player.js",
+    "check-credentials": "./node_modules/.bin/tsc check_api_credentials.ts && node check_api_credentials.js"
+  },
+  "author": "",
+  "license": "MIT"
+}

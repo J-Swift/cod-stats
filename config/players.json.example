@@ -1,0 +1,28 @@
+[
+  {
+    "name": "Jimmy",
+    "isCore": true,
+    "accounts": [
+      {
+        "activisionPlatform": "battle",
+        "activisionTag": "JamesSwift#1805",
+        "unoId": "2391270"
+      }
+    ]
+  },
+  {
+    "name": "Biffle",
+    "accounts": [
+      {
+        "activisionPlatform": "battle",
+        "activisionTag": "DiazBiffle#1415",
+        "unoId": "2741977644267553271"
+      },
+      {
+        "activisionPlatform": "acti",
+        "activisionTag": "Biffle#6182623",
+        "unoId": "2741977644267553271"
+      }
+    ]
+  }
+]

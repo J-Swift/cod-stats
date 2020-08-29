@@ -1,0 +1,4 @@
+/data
+!/data/.gitkeep
+/resources/images/players/*
+!/resources/images/players/_missing.png

@@ -1,0 +1,226 @@
+/* Small devices (landscape phones, 576px and up) */
+/* @media (min-width: 576px) { ... } */
+/* Medium devices (tablets, 768px and up) */
+/* @media (min-width: 768px) { ... } */
+/* Large devices (desktops, 992px and up) */
+/* @media (min-width: 992px) { ... } */
+/* Extra large devices (large desktops, 1200px and up) */
+/* @media (min-width: 1200px) { ... } */
+
+:root {
+  /***********/
+  /* theming */
+  /***********/
+
+  --background-color: #121212;
+  --on-background-color: #fff;
+
+  --surface-color: 48, 48, 48;
+  --on-surface-color: 255, 255, 255;
+
+  --primary-color: 184, 240, 163;
+
+  /**********************/
+  /* responsive styling */
+  /**********************/
+
+  --body-margin: 0.5rem;
+}
+
+@media(min-width: 992px) {
+  :root {
+    --body-margin: 2rem;
+  }
+}
+
+body {
+  margin: var(--body-margin);
+  background: var(--background-color);
+  color: var(--on-background-color);
+}
+
+a {
+  color: rgba(var(--primary-color), 1.0);
+}
+a:hover {
+  color: rgba(var(--primary-color), 0.5);
+}
+
+h1 {
+  font-size: 8.0rem;
+}
+
+h2 {
+  font-size: 5.0rem;
+}
+
+h3 {
+  font-size: 3.0rem;
+}
+
+h4 {
+  font-size: 2.0rem;
+}
+
+h5 {
+  font-size: 1.5rem;
+}
+
+h6 {
+  font-size: 1.25rem;
+}
+
+.text-capitalize {
+  text-transform: capitalize;
+}
+
+.records-table-container>*,
+.teamrecords-table-container>*,
+.matches-table-container>*,
+.sessions-table-container>*,
+.games-table-container>* {
+  margin-top: 2rem;
+}
+
+.last-updated-text {
+  position: fixed;
+  right: 1rem;
+  bottom: 1rem;
+  font-size: small;
+}
+
+.card {
+  transition: 0.3s;
+  padding: 1rem;
+  display: inline-block;
+  background: rgba(var(--surface-color), 0.8);
+  color: rgba(var(--on-surface-color), 1.0);
+}
+
+.card .card-deemphasize {
+  color: rgba(var(--on-surface-color), 0.6);
+}
+
+.card:hover {
+  background: rgba(var(--surface-color), 0.95);
+}
+
+.records,
+.teamrecords,
+.matches,
+.sessions {
+  display: grid;
+  grid-gap: 1rem;
+}
+
+.records {
+  grid-template-columns: repeat(auto-fill, minmax(12.5em, 1fr));
+}
+
+.records .card {
+  text-align: center;
+}
+
+.records .card--title,
+.teamrecords .card--title {
+  font-size: 1.1rem;
+}
+
+.records .card--value {
+  font-size: 2rem;
+  margin: 1rem 0;
+}
+
+.records .card--attribution {
+  font-size: 0.8rem;
+  text-transform: capitalize;
+}
+
+.matches,
+.sessions {
+  grid-template-columns: repeat(auto-fill, minmax(18em, 26.5em));
+  justify-content: center;
+}
+
+.matches .card.card-winner {
+  --surface-color: 205, 153, 15;
+}
+
+.matches .card--date {
+  float: left;
+}
+
+.matches .card--match-type {
+  text-align: right;
+}
+
+.matches .card--player-names {
+  text-align: center;
+  margin-top: .5rem;
+  text-transform: capitalize;
+}
+
+.matches .card--placement {
+  clear: both;
+  font-size: 1.875rem;
+  text-align: center;
+  margin-top: 2rem;
+}
+
+.matches .card--stats-container,
+.sessions .card--stats-container {
+  display: flex;
+  flex-flow: row wrap;
+  justify-content: space-around;
+  margin-top: 1.5rem;
+}
+
+.matches .card--stats-stat,
+.sessions .card--stats-stat {
+  text-align: center;
+  margin: 0 0.25rem 0.5rem 0.25rem;
+}
+
+.matches .card--stats-stat-value,
+.sessions .card--stats-stat-value {
+  margin-bottom: 0.25rem;
+}
+
+.matches .card--stats-stat-name,
+.sessions .card--stats-stat-name {}
+
+.sessions .card--player-text {
+  text-transform: capitalize;
+  font-size: 1.5rem;
+}
+
+.teamrecords {
+  grid-template-columns: repeat(auto-fill, minmax(35em, 1fr));
+}
+
+.sortable-table {
+  width: 100%;
+  margin-top: 1rem;
+}
+
+.sortable-table th {
+  text-align: left;
+  white-space: nowrap;
+}
+
+.sortable-table th,
+.sortable-table td {
+  padding: 0.25rem 0.5rem 0.25rem 0;
+}
+
+.sortable-table th {
+  padding-bottom: 0.5rem;
+}
+.sortable-table th:last-child,
+.sortable-table td:last-child {
+  padding-right: 0;
+}
+
+.sortable-table tr:nth-child(even) {
+  background-color: rgba(255, 255, 255, 0.05);
+}

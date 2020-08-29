@@ -1,0 +1,7 @@
+.git
+.dockerignore
+Dockerfile
+
+.data
+
+/fetcher/node_modules

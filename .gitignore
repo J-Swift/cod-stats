@@ -1,0 +1,5 @@
+/config/env
+/config/players.json
+
+.data
+!.data/**/.gitkeep

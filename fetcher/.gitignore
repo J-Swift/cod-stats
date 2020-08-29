@@ -1,0 +1,6 @@
+/out
+/node_modules
+/fetch_matches.js
+/query_player.js
+/check_api_credentials.js
+/data/out
