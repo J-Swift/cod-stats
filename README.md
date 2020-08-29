@@ -18,7 +18,7 @@ You can see an live example running at https://codstats-frontend.s3.amazonaws.co
 
 Main page / Player page
 
-<img src="https://github.com/J-Swift/codstats/raw/master/gh_images/main-page.png" width="300px" />  <img src="https://github.com/J-Swift/codstats/raw/master/gh_images/player-page-cropped.png" width="300px" />
+<img src="https://github.com/J-Swift/cod-stats/raw/master/gh_images/main-page.png" width="300px" />  <img src="https://github.com/J-Swift/cod-stats/raw/master/gh_images/player-page-cropped.png" width="300px" />
 
 
 ## Requirements:
