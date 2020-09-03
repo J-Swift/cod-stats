@@ -54,7 +54,7 @@ ensure-bootstrap: silent-by-default check-docker-is-installed check-players-json
 ################################################################################
 
 docker-push: docker-build docker-login
-	docker tag codstats:latest $(AWS_ECR_URL)/$(DOCKER_IMG_TAG):latest
+	docker tag $(DOCKER_IMG_TAG):latest $(AWS_ECR_URL)/$(DOCKER_IMG_TAG):latest
 	docker push $(AWS_ECR_URL)/$(DOCKER_IMG_TAG):latest
 
 aws-delete-bucket:
