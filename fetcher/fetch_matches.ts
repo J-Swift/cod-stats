@@ -4,11 +4,13 @@ const API = require('call-of-duty-api')();
 const USERNAME = process.env.COD_USERNAME;
 const PASSWORD = process.env.COD_PASSWORD;
 const COD_DATADIR = process.env.COD_DATADIR;
-const OUTDIR=`${COD_DATADIR}/fetcher/output`;
+const OUTDIR = `${COD_DATADIR}/fetcher/output`;
+const RATE_LIMIT_FILE = `${COD_DATADIR}/fetcher/rate_limit_until.json`;
 
 const codApiBatchLimit = 20;
 const codApiMatchResultLimit = 1000;
 const requestBatchLimit = 10;
+const initialRateLimitBackoffMins = 60;
 
 // Typings
 
@@ -18,17 +20,65 @@ type ResultOK<T> = { status: 'ok'; results: T };
 type Result<T> = ResultOK<T> | ResultError;
 type MatchResults = { multiplayer: any; warzone: any };
 type StoredMatchData = { matchId: string; playerUnoId: string };
+type RateLimitInfo = { lastBackoffMins: number; delayUntilUnix: number };
 
 // Config / data
 
-const playerMappings: Record<string, PlayerMapping[]> = JSON.parse(fs.readFileSync('../config/players.json', 'utf8')).reduce(
-  (memo, it) => {
-    const accounts = it.accounts.map(account => { return {...account, playerName: it.name}; })
-    memo[it.name.toLowerCase()] = accounts;
-    return memo;
-  },
-  {}
-);
+const playerMappings: Record<string, PlayerMapping[]> = JSON.parse(
+  fs.readFileSync('../config/players.json', 'utf8')
+).reduce((memo, it) => {
+  const accounts = it.accounts.map(account => {
+    return { ...account, playerName: it.name };
+  });
+  memo[it.name.toLowerCase()] = accounts;
+  return memo;
+}, {});
+
+// Rate limiting
+
+function currentUnixTimeSeconds() {
+  return Math.trunc(Date.now() / 1000);
+}
+
+function getRateLimitInfo(): RateLimitInfo | null {
+  if (!fs.existsSync(RATE_LIMIT_FILE)) {
+    return null;
+  }
+  return JSON.parse(fs.readFileSync(RATE_LIMIT_FILE, 'utf8')) as RateLimitInfo;
+}
+
+function rateLimitBackoffRemaining() {
+  const rateLimitInfo = getRateLimitInfo();
+  if (rateLimitInfo == null) {
+    return 0;
+  }
+  const currentUnix = currentUnixTimeSeconds();
+  return rateLimitInfo.delayUntilUnix - currentUnix;
+}
+
+function isRateLimitError(error: any) {
+  if (typeof error == 'string') {
+    // TODO(jpr): patch lib to provide better error object
+    return error.indexOf('429') >= 0 || error.indexOf('403') >= 0;
+  }
+  return false;
+}
+
+function writeNewRateLimitInfo() {
+  const rateLimitInfo = getRateLimitInfo() ?? { lastBackoffMins: initialRateLimitBackoffMins / 2, delayUntilUnix: 0 };
+  // exponential backoff
+  const newBackoffMins = rateLimitInfo.lastBackoffMins * 2;
+  const newRateLimitInfo = { lastBackoffMins: newBackoffMins, delayUntilUnix: currentUnixTimeSeconds() + 60 * newBackoffMins };
+  console.info(`Backing off for [${newBackoffMins}] mins`);
+  fs.writeFileSync(RATE_LIMIT_FILE, JSON.stringify(newRateLimitInfo));
+}
+
+function deleteRateLimitInfo() {
+  if (!fs.existsSync(RATE_LIMIT_FILE)) {
+    return;
+  }
+  fs.unlinkSync(RATE_LIMIT_FILE);
+}
 
 // DO WORK SON
 
@@ -188,12 +238,17 @@ async function getMatches(
   }
 }
 
-async function exhaustivelyRetrieveMatches(tag: string, platform: string, getMoreFn: (tag: string, start: number, end: number, platform: string)=> Promise<any[]>) {
-  let start = 0, end = 0;
+async function exhaustivelyRetrieveMatches(
+  tag: string,
+  platform: string,
+  getMoreFn: (tag: string, start: number, end: number, platform: string) => Promise<any[]>
+) {
+  let start = 0,
+    end = 0;
   let results = [];
   let keepGoing = true;
 
-  while(keepGoing) {
+  while (keepGoing) {
     let newResults = await getMoreFn(tag, start, end, platform);
     results = results.concat(newResults);
     if (0 <= newResults.length && newResults.length < codApiMatchResultLimit) {
@@ -250,9 +305,16 @@ async function main(mappings: PlayerMapping[]): Promise<Result<any>> {
     process.exit(1);
   }
 
+  const rateLimitRemaining = rateLimitBackoffRemaining();
+  if (rateLimitRemaining > 0) {
+    const remainingText = rateLimitRemaining < 60 ? '< 1' : Math.trunc(rateLimitRemaining/60);
+    console.error(`Waiting [${remainingText}] more mins because of rate limiting`);
+    process.exit(1);
+  }
+
   try {
     if (!fs.existsSync(OUTDIR)) {
-      fs.mkdirSync(OUTDIR, {recursive: true});
+      fs.mkdirSync(OUTDIR, { recursive: true });
     }
 
     await loginIfNeeded();
@@ -288,10 +350,15 @@ async function main(mappings: PlayerMapping[]): Promise<Result<any>> {
         await downloadMatchesByBatch(results[name].warzone, playerMapping, 'wz', previouslyDownloadedMatches);
       }
     }
+
+    deleteRateLimitInfo();
   } catch (err) {
     console.log('--------------------------------------------------------------------------------');
     console.error('ERROR:');
     console.error(err);
+    if (isRateLimitError(err)) {
+      writeNewRateLimitInfo();
+    }
     process.exit(1);
   }
 })();
