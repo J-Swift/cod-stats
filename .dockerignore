@@ -5,3 +5,4 @@ Dockerfile
 .data
 
 /fetcher/node_modules
+/deploy/**/node_modules

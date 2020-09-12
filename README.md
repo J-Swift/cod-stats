@@ -140,7 +140,7 @@ The frontend project also has a deploy script which pushes the generated files t
 **A**: A session is currently defined as one or more games that occur at least 2 hours after any other games. So if you played 3 games, then waited 2 hours and played another game, that would be 2 sessions. However, if you played the 4th game just 1.5 hours later, it would be considered to be a part of the same session. The 2 hours is arbitrary (set in the `parse_matches.sh` `create_tables` function), and might be adjusted in the future.
 
 **Q**: How do I test the site locally?  
-**A**: Since the default setup encapsulates in the Docker container, you need to run the `update_all.sh` script locally and then serve those files to your browser. I use pythons built in http server (`cd frontend && python -m SimpleHTTPServer`).
+**A**: Since the default setup encapsulates in the Docker container, you need to run the `run_and_deploy.sh` script locally and then serve those files to your browser. I use pythons built in http server (`cd .data/frontend/output && python -m SimpleHTTPServer`).
 
 **Q**: What can I use to browse the data in the DB?  
 **A**: I use [DB Browser for SQLite](https://github.com/sqlitebrowser/sqlitebrowser) on my Mac

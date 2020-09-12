@@ -25,6 +25,11 @@ COPY frontend .
 # frontend work
 WORKDIR /opt/app
 
+WORKDIR /opt/app/deploy
+COPY deploy/deploy.sh .
+# deploy work
+WORKDIR /opt/app
+
 COPY config/players.json ./config/
-COPY update_all.sh ./
-CMD ["/bin/bash", "update_all.sh"]
+COPY run_and_deploy.sh ./
+CMD ["/bin/bash", "run_and_deploy.sh"]

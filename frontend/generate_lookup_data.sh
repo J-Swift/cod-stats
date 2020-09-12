@@ -4,7 +4,8 @@ set -euo pipefail
 
 readonly sourcedir="${COD_DATADIR}/parser/output"
 readonly outdir_staging=$(mktemp -d)
-readonly outdir_dest="./data/output"
+readonly outdir_staging_data="${outdir_staging}/data/output"
+readonly outdir_dest="${COD_DATADIR}/frontend/output"
 
 readonly dbfile="${sourcedir}/data.sqlite"
 
@@ -26,6 +27,7 @@ if [ ! -d "${outdir_staging}" ]; then
 fi
 
 mkdir -p "${outdir_dest}"
+mkdir -p "${outdir_staging_data}"
 
 ### SQL
 
@@ -51,15 +53,15 @@ report_file_written() {
 
 write_meta() {
   local start=$(get_ts)
-  cp ../config/players.json "${outdir_staging}/players.json"
+  cp ../config/players.json "${outdir_staging_data}/players.json"
   local end=$(get_ts)
-  report_file_written "${outdir_staging}/players.json" "${start}" "${end}"
+  report_file_written "${outdir_staging_data}/players.json" "${start}" "${end}"
 
   local start=$(get_ts)
   local -r ts=$(get_ts)
-  echo "{\"updatedAt\": ${ts}}" >"${outdir_staging}/meta.json"
+  echo "{\"updatedAt\": ${ts}}" >"${outdir_staging_data}/meta.json"
   local end=$(get_ts)
-  report_file_written "${outdir_staging}/meta.json" "${start}" "${end}"
+  report_file_written "${outdir_staging_data}/meta.json" "${start}" "${end}"
 
   local start=$(get_ts)
   local -r data_seasons=$(
@@ -83,9 +85,9 @@ SELECT
 FROM cte_seasons;
 EOF
   )
-  echo "${data_seasons}" >"${outdir_staging}/seasons.json"
+  echo "${data_seasons}" >"${outdir_staging_data}/seasons.json"
   local end=$(get_ts)
-  report_file_written "${outdir_staging}/seasons.json" "${start}" "${end}"
+  report_file_written "${outdir_staging_data}/seasons.json" "${start}" "${end}"
 }
 
 write_leaderboards() {
@@ -343,7 +345,7 @@ SELECT json_array(
 EOF
   )
 
-  local outpath="${outdir_staging}/leaderboard_bygame.json"
+  local outpath="${outdir_staging_data}/leaderboard_bygame.json"
   echo "${data_leaderboard}" >"${outpath}"
   local end=$(get_ts)
   report_file_written "${outpath}" "${start}" "${end}"
@@ -468,7 +470,7 @@ SELECT json_array(
 EOF
   )
 
-  local outpath="${outdir_staging}/leaderboard_lifetime.json"
+  local outpath="${outdir_staging_data}/leaderboard_lifetime.json"
   echo "${data_leaderboard}" >"${outpath}"
   local end=$(get_ts)
   report_file_written "${outpath}" "${start}" "${end}"
@@ -500,7 +502,7 @@ select group_concat(leaderboards) from (
 EOF
   )
 
-  local outpath="${outdir_staging}/team_leaderboards.json"
+  local outpath="${outdir_staging_data}/team_leaderboards.json"
   echo "[" >"${outpath}"
   echo "${data_leaderboard}" >>"${outpath}"
   echo "]" >>"${outpath}"
@@ -536,7 +538,7 @@ SELECT group_concat(stats) FROM (select * from cte_recent_stats LIMIT ${num_resu
 EOF
   )
 
-  local outpath="${outdir_staging}/recent_matches.json"
+  local outpath="${outdir_staging_data}/recent_matches.json"
   echo "[" >"${outpath}"
   echo "${data_recent_matches}" >>"${outpath}"
   echo "]" >>"${outpath}"
@@ -568,7 +570,7 @@ select group_concat(
 EOF
   )
 
-  local outpath="${outdir_staging}/recent_sessions.json"
+  local outpath="${outdir_staging_data}/recent_sessions.json"
   echo "[" >"${outpath}"
   echo "${data_recent_sessions}" >>"${outpath}"
   echo "]" >>"${outpath}"
@@ -899,7 +901,7 @@ EOF
     local name="${player_ids[idx]}"
 
     local start=$(get_ts)
-    local outpath="${outdir_staging}/${name}_player_stats.json"
+    local outpath="${outdir_staging_data}/${name}_player_stats.json"
     write_player_rollup_stats_to_json "${name}" "${outpath}"
     local end=$(get_ts)
     report_file_written "${outpath}" "${start}" "${end}"
@@ -910,13 +912,13 @@ EOF
       local season_id="${season_ids[season_idx]}"
 
       local start=$(get_ts)
-      local outpath="${outdir_staging}/${name}_${season_id}_time_wz.json"
+      local outpath="${outdir_staging_data}/${name}_${season_id}_time_wz.json"
       write_player_time_stats_to_json "${name}" "${season_start}" "${season_end}" "${outpath}"
       local end=$(get_ts)
       report_file_written "${outpath}" "${start}" "${end}"
 
       local start=$(get_ts)
-      local outpath="${outdir_staging}/${name}_${season_id}_game_wz.json"
+      local outpath="${outdir_staging_data}/${name}_${season_id}_game_wz.json"
       write_player_game_stats_to_json "${name}" "${season_start}" "${season_end}" "${outpath}"
       local end=$(get_ts)
       report_file_written "${outpath}" "${start}" "${end}"
@@ -947,13 +949,17 @@ SELECT json_object(
 EOF
     )
 
-    local outpath="${outdir_staging}/sessions_${name}.json"
+    local outpath="${outdir_staging_data}/sessions_${name}.json"
     echo "${data_player_sessions}" >"${outpath}"
     local end=$(get_ts)
     report_file_written "${outpath}" "${start}" "${end}"
 
     echo
   done
+}
+
+function write_baked_assets() {
+  cp -r index.html resources "${outdir_staging}"
 }
 
 function sync_files_to_dest() {
@@ -964,6 +970,7 @@ function sync_files_to_dest() {
 main() {
   local -r __ids=($(get_player_ids))
 
+  write_baked_assets
   write_player_stats_to_json __ids
   write_leaderboards
   write_recent_matches

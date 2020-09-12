@@ -30,9 +30,14 @@ main() {
   ./parse_matches.sh
   popd > /dev/null
 
-  print_header 'Regenerating FE and deploying'
+  print_header 'Regenerating FE'
   pushd frontend > /dev/null
-  ./generate_lookup_data.sh && ./deploy.sh
+  ./generate_lookup_data.sh
+  popd > /dev/null
+
+  print_header 'Deploying'
+  pushd deploy > /dev/null
+  ./deploy.sh
   popd > /dev/null
 
   local -r end=$( get_ts )
