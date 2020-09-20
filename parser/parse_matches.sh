@@ -163,7 +163,7 @@ CREATE VIEW vw_settings AS
     WITH cte_settings(id, desc, int_value) AS (
       VALUES
         ('monsters', 'Monster game threshold',
-          10),
+          8),
         ('session_delta_seconds', 'Amount of time between games for session detection',
           2 * 60 * 60 ) -- 2 hours
     )
