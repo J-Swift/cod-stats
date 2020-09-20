@@ -457,7 +457,13 @@ CREATE VIEW vw_player_stats_by_day_wz AS
     when kills >= (select int_value from vw_settings where id='monsters') then 1
     else 0
     end
-  ) 'monsters'
+  ) 'monsters',
+  sum(
+    case
+    when kills = 0 then 1
+    else 0
+    end
+  ) 'gooseeggs'
   FROM
     vw_stats_wz
   GROUP BY
@@ -489,7 +495,11 @@ CREATE VIEW vw_player_stats_by_game_wz AS
     case
       WHEN kills >= (select int_value from vw_settings where id='monsters') then 1
       ELSE 0
-      END 'monsters'
+      END 'monsters',
+    case
+      WHEN kills = 0 then 1
+      ELSE 0
+      END 'gooseeggs'
   FROM
     vw_stats_wz
   LEFT JOIN

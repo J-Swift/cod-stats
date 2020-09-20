@@ -726,7 +726,8 @@ WITH cte_stats AS (
         'distanceTraveled', distanceTraveled,
         'kdRatio', kdRatio,
         'scorePerMinute', scorePerMinute,
-        'monsters', monsters
+        'monsters', monsters,
+        'gooseeggs', gooseeggs
       ),
       'smoothed_3', json_object(
         'matchesPlayed', sum(matchesPlayed) OVER(ORDER BY date_key ROWS BETWEEN 2 PRECEDING AND CURRENT ROW),
@@ -739,7 +740,8 @@ WITH cte_stats AS (
         'distanceTraveled', sum(distanceTraveled) OVER(ORDER BY date_key ROWS BETWEEN 2 PRECEDING AND CURRENT ROW),
         'kdRatio', avg(kdRatio) OVER(ORDER BY date_key ROWS BETWEEN 2 PRECEDING AND CURRENT ROW),
         'scorePerMinute', avg(scorePerMinute) OVER(ORDER BY date_key ROWS BETWEEN 2 PRECEDING AND CURRENT ROW),
-        'monsters', sum(monsters) OVER(ORDER BY date_key ROWS BETWEEN 2 PRECEDING AND CURRENT ROW)
+        'monsters', sum(monsters) OVER(ORDER BY date_key ROWS BETWEEN 2 PRECEDING AND CURRENT ROW),
+        'gooseeggs', sum(gooseeggs) OVER(ORDER BY date_key ROWS BETWEEN 2 PRECEDING AND CURRENT ROW)
       ),
       'smoothed_7', json_object(
         'matchesPlayed', sum(matchesPlayed) OVER(ORDER BY date_key ROWS BETWEEN 6 PRECEDING AND CURRENT ROW),
@@ -752,7 +754,8 @@ WITH cte_stats AS (
         'distanceTraveled', sum(distanceTraveled) OVER(ORDER BY date_key ROWS BETWEEN 6 PRECEDING AND CURRENT ROW),
         'kdRatio', avg(kdRatio) OVER(ORDER BY date_key ROWS BETWEEN 6 PRECEDING AND CURRENT ROW),
         'scorePerMinute', avg(scorePerMinute) OVER(ORDER BY date_key ROWS BETWEEN 6 PRECEDING AND CURRENT ROW),
-        'monsters', sum(monsters) OVER(ORDER BY date_key ROWS BETWEEN 6 PRECEDING AND CURRENT ROW)
+        'monsters', sum(monsters) OVER(ORDER BY date_key ROWS BETWEEN 6 PRECEDING AND CURRENT ROW),
+        'gooseeggs', sum(gooseeggs) OVER(ORDER BY date_key ROWS BETWEEN 6 PRECEDING AND CURRENT ROW)
       ),
       'cumalative', json_object(
         'matchesPlayed', sum(matchesPlayed) OVER(ORDER BY date_key),
@@ -765,7 +768,8 @@ WITH cte_stats AS (
         'distanceTraveled', sum(distanceTraveled) OVER(ORDER BY date_key),
         'kdRatio', avg(kdRatio) OVER(ORDER BY date_key),
         'scorePerMinute', avg(scorePerMinute) OVER(ORDER BY date_key),
-        'monsters', sum(monsters) OVER(ORDER BY date_key)
+        'monsters', sum(monsters) OVER(ORDER BY date_key),
+        'gooseeggs', sum(gooseeggs) OVER(ORDER BY date_key)
       )
     )
   ) as stats
@@ -815,7 +819,8 @@ WITH cte_stats AS (
         'distanceTraveled', distanceTraveled,
         'kdRatio', kdRatio,
         'scorePerMinute', scorePerMinute,
-        'monsters', monsters
+        'monsters', monsters,
+        'gooseeggs', gooseeggs
       ),
       'smoothed_10', json_object(
         'matchesPlayed', count(matchesPlayed) OVER(ORDER BY date_key ROWS BETWEEN 9 PRECEDING AND CURRENT ROW),
@@ -828,7 +833,8 @@ WITH cte_stats AS (
         'distanceTraveled', sum(distanceTraveled) OVER(ORDER BY date_key ROWS BETWEEN 9 PRECEDING AND CURRENT ROW),
         'kdRatio', avg(kdRatio) OVER(ORDER BY date_key ROWS BETWEEN 9 PRECEDING AND CURRENT ROW),
         'scorePerMinute', avg(scorePerMinute) OVER(ORDER BY date_key ROWS BETWEEN 9 PRECEDING AND CURRENT ROW),
-        'monsters', sum(monsters) OVER(ORDER BY date_key ROWS BETWEEN 9 PRECEDING AND CURRENT ROW)
+        'monsters', sum(monsters) OVER(ORDER BY date_key ROWS BETWEEN 9 PRECEDING AND CURRENT ROW),
+        'gooseeggs', sum(gooseeggs) OVER(ORDER BY date_key ROWS BETWEEN 9 PRECEDING AND CURRENT ROW)
       ),
       'smoothed_25', json_object(
         'matchesPlayed', count(matchesPlayed) OVER(ORDER BY date_key ROWS BETWEEN 24 PRECEDING AND CURRENT ROW),
@@ -841,7 +847,8 @@ WITH cte_stats AS (
         'distanceTraveled', sum(distanceTraveled) OVER(ORDER BY date_key ROWS BETWEEN 24 PRECEDING AND CURRENT ROW),
         'kdRatio', avg(kdRatio) OVER(ORDER BY date_key ROWS BETWEEN 24 PRECEDING AND CURRENT ROW),
         'scorePerMinute', avg(scorePerMinute) OVER(ORDER BY date_key ROWS BETWEEN 24 PRECEDING AND CURRENT ROW),
-        'monsters', sum(monsters) OVER(ORDER BY date_key ROWS BETWEEN 24 PRECEDING AND CURRENT ROW)
+        'monsters', sum(monsters) OVER(ORDER BY date_key ROWS BETWEEN 24 PRECEDING AND CURRENT ROW),
+        'gooseeggs', sum(gooseeggs) OVER(ORDER BY date_key ROWS BETWEEN 24 PRECEDING AND CURRENT ROW)
       ),
       'cumalative', json_object(
         'matchesPlayed', sum(matchesPlayed) OVER(ORDER BY date_key),
@@ -854,7 +861,8 @@ WITH cte_stats AS (
         'distanceTraveled', sum(distanceTraveled) OVER(ORDER BY date_key),
         'kdRatio', avg(kdRatio) OVER(ORDER BY date_key),
         'scorePerMinute', avg(scorePerMinute) OVER(ORDER BY date_key),
-        'monsters', sum(monsters) OVER(ORDER BY date_key)
+        'monsters', sum(monsters) OVER(ORDER BY date_key),
+        'gooseeggs', sum(gooseeggs) OVER(ORDER BY date_key)
       )
     )
   ) as stats

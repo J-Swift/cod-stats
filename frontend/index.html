@@ -135,6 +135,17 @@
           return 100.0 * (monsters || 0.0) / (matches || 0.0);
         },
       },
+      {
+        dataBucket: 'games',
+        dropdownValue: 'gooseeggpercent', dropdownText: 'Goose Egg %', chartTitle: 'Goose Egg %',
+        statResolver: (data) => {
+          const gooseeggs = deepFetch(data, ['cumalative', 'gooseeggs']);
+          const matches = deepFetch(data, ['cumalative', 'matchesPlayed']);
+          if (gooseeggs == null && matches == null) return null;
+          if ((matches || 0) == 0) return 0;
+          return 100.0 * (gooseeggs || 0.0) / (matches || 0.0);
+        },
+      },
     ];
 
     let _chart = null;
