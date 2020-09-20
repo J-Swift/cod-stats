@@ -454,7 +454,7 @@ CREATE VIEW vw_player_stats_by_day_wz AS
   avg(scorePerMinute) 'scorePerMinute',
   sum(
     case
-    when kills >= (select int_value from vw_settings) then 1
+    when kills >= (select int_value from vw_settings where id='monsters') then 1
     else 0
     end
   ) 'monsters'
@@ -487,7 +487,7 @@ CREATE VIEW vw_player_stats_by_game_wz AS
     kdRatio,
     scorePerMinute,
     case
-      WHEN kills >= (select int_value from vw_settings) then 1
+      WHEN kills >= (select int_value from vw_settings where id='monsters') then 1
       ELSE 0
       END 'monsters'
   FROM
