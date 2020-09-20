@@ -273,10 +273,10 @@ _gamesInfo.forEach(it => {
   let gulagText = "&nbsp;";
   let gulagClassName = "";
   if (it.gulagKills > 0) {
-    gulagText = "&#x2714;"; // ✔;
+    gulagText = "&#x2714;&#xFE0E;"; // ✔;
     gulagClassName = "gulag-win";
   } else if (it.gulagDeaths > 0) {
-    gulagText = "&#x2718;"; // ✘;
+    gulagText = "&#x2718;&#xFE0E;"; // ✘;
     gulagClassName = "gulag-loss";
   }
   html += `
