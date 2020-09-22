@@ -125,7 +125,7 @@
         },
       },
       {
-        dataBucket: 'games',
+        dataBucket: 'days',
         dropdownValue: 'monsterpercent', dropdownText: 'Monster Game %', chartTitle: 'Monster Game %',
         statResolver: (data) => {
           const monsters = deepFetch(data, ['cumalative', 'monsters']);
@@ -136,7 +136,7 @@
         },
       },
       {
-        dataBucket: 'games',
+        dataBucket: 'days',
         dropdownValue: 'gooseeggpercent', dropdownText: 'Goose Egg %', chartTitle: 'Goose Egg %',
         statResolver: (data) => {
           const gooseeggs = deepFetch(data, ['cumalative', 'gooseeggs']);
