@@ -113,8 +113,10 @@ CREATE VIEW vw_game_modes AS
 
         ('br_71',                     'wz', 'wz_solo',         'Stim Solo',              false, true,  true),
         ('br_brbbsolo',               'wz', 'wz_solo',         'Stim Solo',              false, true,  true),
+        ('br_brbbduo',                'wz', 'wz_duos',         'Stim Duos',              false, true,  true),
         ('br_brduostim_name2',        'wz', 'wz_duos',         'Stim Duos',              false, true,  true),
         ('br_brtriostim_name2',       'wz', 'wz_trios',        'Stim Trios',             false, true,  true),
+        ('br_brbbquad',               'wz', 'wz_quads',        'Stim Quads',             false, true,  true),
 
         ('br_brsolo',                 'wz', 'wz_solo',         'Solo',                   false, false, true),
         ('br_87',                     'wz', 'wz_solo',         'Solo',                   false, false, true),
@@ -132,10 +134,13 @@ CREATE VIEW vw_game_modes AS
         ('br_brthquad',               'wz', 'wz_quads',        'Quads 200',              false, false, true),
         ('br_br_real',                'wz', 'wz_realism',      'Realism BR',             false, false, true),
         ('br_86',                     'wz', 'wz_realism',      'Realism BR',             false, false, true),
+        ('br_brhwntrios',             'wz', 'wz_trios',        'Halloween Trios',        false, false, true),
 
         ('br_77' ,                    'wz', 'wz_scopescatter', 'BR Scopes & Scattergun', false, false, false),
         ('brtdm_113',                 'wz', 'wz_rumble',       'Warzone Rumble',         false, false, false),
-        ('br_kingslayer_kingsltrios', 'wz', 'wz_kingtrios',    'Kingslayer Trios',       false, false, false)
+        ('br_kingslayer_kingsltrios', 'wz', 'wz_kingtrios',    'Kingslayer Trios',       false, false, false),
+        ('br_truckwar_trwarsquads',   'wz', 'wz_armoredquads', 'Armored Royale',         false, true, false),
+        ('br_zxp_zmbroy',             'wz', 'wz_zombietrios',  'Zombie Trios',           false, true, false)
     )
     SELECT * from cte_game_modes
   )
