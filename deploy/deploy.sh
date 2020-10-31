@@ -19,11 +19,15 @@ if [ -z "${S3_BUCKET_NAME:-}" ]; then
   die 'Must set envvar [S3_BUCKET_NAME]'
 fi
 
+if [ -z "${S3_ENDPOINT:-}" ]; then
+  die 'Must set envvar [S3_ENDPOINT]'
+fi
+
 main() {
   pushd "${sourcedir}" > /dev/null
 
   echo 'uploading to s3...'
-  aws s3 sync --delete . s3://"${S3_BUCKET_NAME}"/
+  aws s3 sync --delete . s3://"${S3_BUCKET_NAME}"/ --endpoint="${S3_ENDPOINT}"
 
   echo
   echo 'Done!'
