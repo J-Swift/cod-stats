@@ -134,7 +134,10 @@ CREATE VIEW vw_game_modes AS
         ('br_brthquad',               'wz', 'wz_quads',        'Quads 200',              false, false, true),
         ('br_br_real',                'wz', 'wz_realism',      'Realism BR',             false, false, true),
         ('br_86',                     'wz', 'wz_realism',      'Realism BR',             false, false, true),
-        ('br_brhwntrios',             'wz', 'wz_trios',        'Halloween Trios',        false, false, true),
+        ('br_brsolohwn',              'wz', 'wz_solo',         'Night Solo',             false, false, true),
+        ('br_brduohwn',               'wz', 'wz_duos',         'Night Duos',             false, false, true),
+        ('br_brhwntrios',             'wz', 'wz_trios',        'Night Trios',            false, false, true),
+        ('br_brhwnquad',              'wz', 'wz_quads',        'Night Quads',            false, false, true),
 
         ('br_77' ,                    'wz', 'wz_scopescatter', 'BR Scopes & Scattergun', false, false, false),
         ('brtdm_113',                 'wz', 'wz_rumble',       'Warzone Rumble',         false, false, false),
