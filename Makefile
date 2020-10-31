@@ -35,7 +35,7 @@ docker-run: docker-build
 	@echo
 	@echo Deployment complete. You should be able to view your site at $(AWS_S3_PUBLIC_URL)
 
-docker-query-player: ensure-args docker-build
+docker-query-player: ensure-args docker-build-quiet
 	docker run --rm \
 		--env COD_USERNAME='$(COD_API_USERNAME)' \
 		--env COD_PASSWORD='$(COD_API_PASSWORD)' \
