@@ -130,7 +130,6 @@ check-api-credentials-work: docker-build-quiet
 		--env COD_PASSWORD='$(COD_API_PASSWORD)' \
 		$(DOCKER_IMG_TAG) $(BIN_SH_PATH) -c "cd fetcher && npm run-script check-credentials" >/dev/null 2>&1 || (echo "COD credentials didnt work, please check them at https://my.callofduty.com/login" && exit 1)
 
-# https://developers.digitalocean.com/documentation/spaces/#aws-s3-compatibility
 check-s3-bucket-exists:
 	$(AWS_CMD) s3api head-bucket --bucket $(AWS_S3_BUCKET_NAME) --endpoint-url $(AWS_S3_ENDPOINT) >/dev/null || (echo "Bucket [$(AWS_S3_BUCKET_NAME)] doesnt exist, create it first!" && exit 1)
 
