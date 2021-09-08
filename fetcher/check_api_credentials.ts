@@ -1,7 +1,6 @@
 const API = require('call-of-duty-api')();
 
-const USERNAME = process.env.COD_USERNAME;
-const PASSWORD = process.env.COD_PASSWORD;
+const SSO = process.env.COD_SSO;
 
 // DO WORK SON
 
@@ -10,21 +9,17 @@ const PASSWORD = process.env.COD_PASSWORD;
  */
 
 (async () => {
-  if (!USERNAME) {
-    console.error('Must set envvar [COD_USERNAME]');
-    process.exit(1);
-  }
-
-  if (!PASSWORD) {
-    console.error('Must set envvar [COD_PASSWORD]');
+  if (!SSO) {
+    console.error('Must set envvar [COD_SSO]');
     process.exit(1);
   }
 
   try {
-    await API.login(USERNAME, PASSWORD);
+    await API.loginWithSSO(SSO);
     console.log('Credentials valid.');
   } catch (err) {
     console.log('--------------------------------------------------------------------------------');
+    console.log(SSO);
     console.error('ERROR:');
     console.error(err);
     process.exit(1);
