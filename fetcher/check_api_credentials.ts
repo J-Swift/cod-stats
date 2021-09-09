@@ -19,7 +19,6 @@ const SSO = process.env.COD_SSO;
     console.log('Credentials valid.');
   } catch (err) {
     console.log('--------------------------------------------------------------------------------');
-    console.log(SSO);
     console.error('ERROR:');
     console.error(err);
     process.exit(1);
