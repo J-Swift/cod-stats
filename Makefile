@@ -29,16 +29,14 @@ docker-run: docker-build
 		--env AWS_ACCESS_KEY_ID='$(AWS_ACCESS_KEY_ID)' \
 		--env AWS_SECRET_ACCESS_KEY='$(AWS_SECRET_ACCESS_KEY)' \
 		--env S3_BUCKET_NAME='$(AWS_S3_BUCKET_NAME)' \
-		--env COD_USERNAME='$(COD_API_USERNAME)' \
-		--env COD_PASSWORD='$(COD_API_PASSWORD)' \
+		--env COD_SSO='$(COD_API_SSO)' \
 		$(DOCKER_IMG_TAG)
 	@echo
 	@echo Deployment complete. You should be able to view your site at $(AWS_S3_PUBLIC_URL)
 
 docker-query-player: ensure-args docker-build-quiet
 	docker run --rm \
-		--env COD_USERNAME='$(COD_API_USERNAME)' \
-		--env COD_PASSWORD='$(COD_API_PASSWORD)' \
+		--env COD_SSO='$(COD_API_SSO)' \
 		$(DOCKER_IMG_TAG) $(BIN_SH_PATH) -c "cd fetcher && npm run-script query-player $(ARGS)"
 
 check-bootstrap: silent-by-default check-docker-is-installed check-players-json-created ensure-api-credentials-set check-api-credentials-work ensure-aws-credentials-set check-aws-credentials-work ensure-s3-bucket-name-set check-s3-bucket-exists check-s3-bucket-is-website check-s3-bucket-has-public-policy
@@ -81,17 +79,11 @@ docker-login:
 	$(AWS_CMD) ecr get-login-password --region $(AWS_REGION) | docker login --username AWS --password-stdin $(AWS_ECR_URL)
 
 ensure-api-credentials-set:
-ifndef COD_API_USERNAME
-	$(error COD_API_USERNAME is undefined)
+ifndef COD_API_SSO
+	$(error COD_API_SSO is undefined)
 endif
-ifeq ($(COD_API_USERNAME),'')
-	$(error COD_API_USERNAME is not set)
-endif
-ifndef COD_API_PASSWORD
-	$(error COD_API_PASSWORD is undefined)
-endif
-ifeq ($(COD_API_PASSWORD),'')
-	$(error COD_API_PASSWORD is not set)
+ifeq ($(COD_API_SSO),'')
+	$(error COD_API_SSO is not set)
 endif
 
 ensure-aws-credentials-set:
@@ -119,8 +111,7 @@ check-aws-credentials-work:
 
 check-api-credentials-work: docker-build-quiet
 	docker run --rm \
-		--env COD_USERNAME='$(COD_API_USERNAME)' \
-		--env COD_PASSWORD='$(COD_API_PASSWORD)' \
+		--env COD_SSO='$(COD_API_SSO)' \
 		$(DOCKER_IMG_TAG) $(BIN_SH_PATH) -c "cd fetcher && npm run-script check-credentials" >/dev/null 2>&1 || (echo "COD credentials didnt work, please check them at https://my.callofduty.com/login" && exit 1)
 
 check-s3-bucket-exists:
