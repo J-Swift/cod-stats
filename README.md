@@ -46,7 +46,9 @@ cp config/env.example config/env
 cp config/players.json.example config/players.json
 # ... fill in players.json ...
 
-make ensure-bootstrap && make-docker-run
+make ensure-bootstrap && make docker-run
+# If you are hosting on DigitalOcean Spaces...
+make do-ensure-bootstrap && make docker-run
 ```
 
 and then to update with newer data in the future, just run this:

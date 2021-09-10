@@ -1,7 +1,6 @@
 const API = require('call-of-duty-api')();
 
-const USERNAME = process.env.COD_USERNAME;
-const PASSWORD = process.env.COD_PASSWORD;
+const SSO = process.env.COD_SSO;
 
 // Typings
 
@@ -13,7 +12,7 @@ type Result<T> = ResultOK<T> | ResultError;
 
 async function loginIfNeeded() {
   if (!API.isLoggedIn()) {
-    await API.login(USERNAME, PASSWORD);
+    await API.loginWithSSO(SSO);
   }
 }
 
@@ -78,13 +77,8 @@ async function lookupUnoId(platform: string, username: string) {
  */
 
 (async () => {
-  if (!USERNAME) {
-    console.error('Must set envvar [COD_USERNAME]');
-    process.exit(1);
-  }
-
-  if (!PASSWORD) {
-    console.error('Must set envvar [COD_PASSWORD]');
+  if (!SSO) {
+    console.error('Must set envvar [COD_SSO]');
     process.exit(1);
   }
 

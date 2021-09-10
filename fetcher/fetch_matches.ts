@@ -1,8 +1,7 @@
 import * as fs from 'fs';
 const API = require('call-of-duty-api')();
 
-const USERNAME = process.env.COD_USERNAME;
-const PASSWORD = process.env.COD_PASSWORD;
+const SSO = process.env.COD_SSO;
 const COD_DATADIR = process.env.COD_DATADIR;
 const OUTDIR = `${COD_DATADIR}/fetcher/output`;
 const RATE_LIMIT_FILE = `${COD_DATADIR}/fetcher/rate_limit_until.json`;
@@ -84,7 +83,7 @@ function deleteRateLimitInfo() {
 
 async function loginIfNeeded() {
   if (!API.isLoggedIn()) {
-    await API.login(USERNAME, PASSWORD);
+    await API.loginWithSSO(SSO);
   }
 }
 
@@ -295,13 +294,8 @@ async function main(mappings: PlayerMapping[]): Promise<Result<any>> {
     process.exit(1);
   }
 
-  if (!USERNAME) {
-    console.error('Must set envvar [COD_USERNAME]');
-    process.exit(1);
-  }
-
-  if (!PASSWORD) {
-    console.error('Must set envvar [COD_PASSWORD]');
+  if (!SSO) {
+    console.error('Must set envvar [COD_SSO]');
     process.exit(1);
   }
 
