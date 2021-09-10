@@ -8,7 +8,8 @@ endif
 
 AWS_CMD = docker run --rm --env AWS_ACCESS_KEY_ID='$(AWS_ACCESS_KEY_ID)' --env AWS_SECRET_ACCESS_KEY='$(AWS_SECRET_ACCESS_KEY)' amazon/aws-cli
 AWS_ECS_CMD = docker run --rm --env AWS_ACCESS_KEY_ID='$(AWS_ACCESS_KEY_ID)' --env AWS_SECRET_ACCESS_KEY='$(AWS_SECRET_ACCESS_KEY)' --env AWS_DEFAULT_REGION=$(AWS_REGION) amazon/aws-cli -- ecs
-AWS_S3_PUBLIC_URL = https://$(AWS_S3_BUCKET_NAME).s3.amazonaws.com/index.html
+AWS_S3_PUBLIC_URL = https://$(AWS_S3_BUCKET_NAME).$(HOST_REGION).$(HOST_PROVIDER)/index.html
+AWS_S3_ENDPOINT = https://$(HOST_REGION).$(HOST_PROVIDER)
 
 ifeq ($(OS),Windows_NT)
 # NOTE(jpr): see https://www.reddit.com/r/docker/comments/734arg/cant_figure_out_how_to_bash_into_docker_container/dnnz2uq/
@@ -29,6 +30,7 @@ docker-run: docker-build
 		--env AWS_ACCESS_KEY_ID='$(AWS_ACCESS_KEY_ID)' \
 		--env AWS_SECRET_ACCESS_KEY='$(AWS_SECRET_ACCESS_KEY)' \
 		--env S3_BUCKET_NAME='$(AWS_S3_BUCKET_NAME)' \
+		--env S3_ENDPOINT='$(AWS_S3_ENDPOINT)' \
 		--env COD_SSO='$(COD_API_SSO)' \
 		$(DOCKER_IMG_TAG)
 	@echo
@@ -44,6 +46,11 @@ check-bootstrap: silent-by-default check-docker-is-installed check-players-json-
 	@echo You should be able to view your site at $(AWS_S3_PUBLIC_URL) after you run \`make docker-run\`
 
 ensure-bootstrap: silent-by-default check-docker-is-installed check-players-json-created ensure-api-credentials-set check-api-credentials-work ensure-aws-credentials-set check-aws-credentials-work ensure-s3-bucket-name-set ensure-s3-bucket-exists ensure-s3-bucket-is-website ensure-s3-bucket-has-public-policy
+	@echo Everything should be setup for bucket [$(AWS_S3_BUCKET_NAME)]
+	@echo You should be able to view your site at $(AWS_S3_PUBLIC_URL) after you run \`make docker-run\`
+
+# https://developers.digitalocean.com/documentation/spaces/#aws-s3-compatibility
+do-ensure-bootstrap: silent-by-default check-docker-is-installed check-players-json-created ensure-api-credentials-set check-api-credentials-work ensure-aws-credentials-set ensure-s3-bucket-name-set ensure-s3-bucket-exists ensure-s3-bucket-has-public-policy
 	@echo Everything should be setup for bucket [$(AWS_S3_BUCKET_NAME)]
 	@echo You should be able to view your site at $(AWS_S3_PUBLIC_URL) after you run \`make docker-run\`
 
@@ -115,13 +122,13 @@ check-api-credentials-work: docker-build-quiet
 		$(DOCKER_IMG_TAG) $(BIN_SH_PATH) -c "cd fetcher && npm run-script check-credentials" >/dev/null 2>&1 || (echo "COD credentials didnt work, please check them at https://my.callofduty.com/login" && exit 1)
 
 check-s3-bucket-exists:
-	$(AWS_CMD) s3api head-bucket --bucket $(AWS_S3_BUCKET_NAME) >/dev/null || (echo "Bucket [$(AWS_S3_BUCKET_NAME)] doesnt exist, create it first!" && exit 1)
+	$(AWS_CMD) s3api head-bucket --bucket $(AWS_S3_BUCKET_NAME) --endpoint-url $(AWS_S3_ENDPOINT) >/dev/null || (echo "Bucket [$(AWS_S3_BUCKET_NAME)] doesnt exist, create it first!" && exit 1)
 
 check-s3-bucket-is-website:
-	$(AWS_CMD) s3api get-bucket-website --bucket $(AWS_S3_BUCKET_NAME) >/dev/null || (echo "Bucket [$(AWS_S3_BUCKET_NAME)] is not an s3 website, enable the configuration!" && exit 1)
+	$(AWS_CMD) s3api get-bucket-website --bucket $(AWS_S3_BUCKET_NAME) --endpoint-url $(AWS_S3_ENDPOINT) >/dev/null || (echo "Bucket [$(AWS_S3_BUCKET_NAME)] is not an s3 website, enable the configuration!" && exit 1)
 
 check-s3-bucket-has-public-policy:
-	$(AWS_CMD) s3api get-bucket-policy --bucket $(AWS_S3_BUCKET_NAME) >/dev/null || (echo "Bucket [$(AWS_S3_BUCKET_NAME)] doesnt have a public policy, attach it first!" && exit 1)
+	$(AWS_CMD) s3api get-bucket-policy --bucket $(AWS_S3_BUCKET_NAME) --endpoint-url $(AWS_S3_ENDPOINT) >/dev/null || (echo "Bucket [$(AWS_S3_BUCKET_NAME)] doesnt have a public policy, attach it first!" && exit 1)
 
 ensure-s3-bucket-exists:
 # NOTE(jpr): aws has different rules for us-east-1....
@@ -135,7 +142,7 @@ ensure-s3-bucket-is-website:
 	$(MAKE) check-s3-bucket-is-website >/dev/null 2>&1 || (echo "Bucket [$(AWS_S3_BUCKET_NAME)] is not an s3 website, enabling the configuration.." && $(AWS_CMD) s3 website s3://$(AWS_S3_BUCKET_NAME) --index-document index.html)
 
 ensure-s3-bucket-has-public-policy:
-	$(MAKE) check-s3-bucket-has-public-policy >/dev/null 2>&1 || (echo "Bucket [$(AWS_S3_BUCKET_NAME)] doesnt have a public policy, attaching.." && $(AWS_CMD) s3api put-bucket-policy --bucket $(AWS_S3_BUCKET_NAME) --policy '{ "Statement": [ { "Effect": "Allow", "Principal": "*", "Action": "s3:GetObject", "Resource": "arn:aws:s3:::$(AWS_S3_BUCKET_NAME)/*" } ] }')
+	$(MAKE) check-s3-bucket-has-public-policy >/dev/null 2>&1 || (echo "Bucket [$(AWS_S3_BUCKET_NAME)] doesnt have a public policy, attaching.." && $(AWS_CMD) s3api --endpoint-url=$(AWS_S3_ENDPOINT) put-bucket-policy --bucket $(AWS_S3_BUCKET_NAME) --policy '{ "Statement": [ { "Effect": "Allow", "Principal": "*", "Action": "s3:GetObject", "Resource": "arn:aws:s3:::$(AWS_S3_BUCKET_NAME)/*" } ] }')
 
 ensure-s3-bucket-name-set:
 ifndef AWS_S3_BUCKET_NAME
