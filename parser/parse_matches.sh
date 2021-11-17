@@ -527,12 +527,13 @@ EOF
 }
 
 seed_data() {
-  local -r players=$( cat ../config/players.json  | jq -r ". | map({name: .name, unoId: (.accounts[].unoId)}) | unique | map( \"('\" + (.name | ascii_downcase) + \"', '\" + .unoId + \"')\") | join(\", \")" )
+  local -r players_values_sql=$( cat ../config/players.json  | jq -r ". | map({name: .name, unoId: (.accounts[].unoId)}) | unique | map( \"('\" + (.name | ascii_downcase) + \"', '\" + .unoId + \"')\") | join(\", \")" )
+  local -r players=$( cat ../config/players.json  | jq -r "[.[]] | map( \"'\" + (.name | ascii_downcase) + \"'\") | join(\", \")" )
   local -r core_players=$( cat ../config/players.json  | jq -r "[.[] | select(.isCore)] | map( \"'\" + (.name | ascii_downcase) + \"'\") | join(\", \")" )
 
   sqlite3 "${dbfile}" <<-EOF
 INSERT OR IGNORE INTO players(player_id, player_uno_id) VALUES
-  ${players};
+  ${players_values_sql};
 
 UPDATE players SET
   is_core =
@@ -540,6 +541,8 @@ UPDATE players SET
       WHEN player_id IN (${core_players}) THEN 1
       ELSE 0
     END;
+
+DELETE FROM players WHERE player_id NOT IN (${players});
 EOF
 }
 
