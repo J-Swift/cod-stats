@@ -127,6 +127,7 @@ CREATE VIEW vw_game_modes AS
         ('br_74',                     'wz', 'wz_trios',        'Trios',                  false, false, true),
         ('br_brquads',                'wz', 'wz_quads',        'Quads',                  false, false, true),
         ('br_89',                     'wz', 'wz_quads',        'Quads',                  false, false, true),
+        ('br_br_quads',               'wz', 'wz_quads',        'Quads',                  false, false, true),
 
         ('br_jugg_brtriojugr',        'wz', 'wz_jugtrios',     'Jugg Trios',             false, false, true),
         ('br_jugg_brquadjugr',        'wz', 'wz_jugquads',     'Jugg Quads',             false, false, true),
