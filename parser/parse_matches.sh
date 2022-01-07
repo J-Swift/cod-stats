@@ -140,6 +140,10 @@ CREATE VIEW vw_game_modes AS
         ('br_brhwntrios',             'wz', 'wz_trios',        'Night Trios',            false, false, true),
         ('br_brhwnquad',              'wz', 'wz_quads',        'Night Quads',            false, false, true),
 
+        ('br_vg_royale_solo',         'wz', 'wz_solo',         'Vanguard Solo',          false, false, true),
+        ('br_vg_royale_duos',         'wz', 'wz_duos',         'Vanguard Duos',          false, false, true),
+        ('br_vg_royale_quads',        'wz', 'wz_quads',        'Vanguard Quads',         false, false, true),
+
         ('br_77' ,                    'wz', 'wz_scopescatter', 'BR Scopes & Scattergun', false, false, false),
         ('brtdm_113',                 'wz', 'wz_rumble',       'Warzone Rumble',         false, false, false),
         ('br_kingslayer_kingsltrios', 'wz', 'wz_kingtrios',    'Kingslayer Trios',       false, false, false),
