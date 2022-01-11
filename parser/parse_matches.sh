@@ -199,9 +199,11 @@ CREATE VIEW vw_core_players AS
 
 DROP VIEW IF EXISTS vw_unknown_modes_wz;
 CREATE VIEW vw_unknown_modes_wz AS
-  SELECT DISTINCT json_extract(stats, '$.mode') mode
+  SELECT json_extract(stats, '$.mode') mode, strftime('%Y-%m-%dT%H:%M:%SZ', min(json_extract(stats, '$.utcEndSeconds')), 'unixepoch') firstSeen, strftime('%Y-%m-%dT%H:%M:%SZ', max(json_extract(stats, '$.utcEndSeconds')), 'unixepoch') lastSeen
   FROM raw_games
-  WHERE json_extract(stats, '$.gameType')='wz' AND mode NOT IN (SELECT id FROM vw_game_modes WHERE mode='wz');
+  WHERE json_extract(stats, '$.gameType')='wz' AND mode NOT IN (SELECT id FROM vw_game_modes WHERE mode='wz')
+  GROUP BY mode
+  ORDER BY firstSeen desc;
 
 DROP VIEW IF EXISTS vw_unknown_modes_mp;
 CREATE VIEW vw_unknown_modes_mp AS
