@@ -937,7 +937,6 @@ EOF
       sqlite3 "${dbfile}" <<-EOF
 SELECT json_object(
   'playerId', '${name}',
-  'updatedAt', strftime('%Y-%m-%dT%H:%M:%SZ', 'now'),
   'sessions', (
     SELECT
       json_group_array(
@@ -959,6 +958,22 @@ EOF
 
     local outpath="${outdir_staging_data}/sessions_${name}.json"
     echo "${data_player_sessions}" >"${outpath}"
+    local end=$(get_ts)
+    report_file_written "${outpath}" "${start}" "${end}"
+
+
+    local start=$(get_ts)
+    local data_player_sessions_updated_at=$(
+      sqlite3 "${dbfile}" <<-EOF
+SELECT json_object(
+  'updatedAt', strftime('%Y-%m-%dT%H:%M:%SZ', 'now'),
+  )
+) res;
+EOF
+    )
+
+    local outpath="${outdir_staging_data}/sessions_${name}_updated_at.json"
+    echo "${data_player_sessions_updated_at}" >"${outpath}"
     local end=$(get_ts)
     report_file_written "${outpath}" "${start}" "${end}"
 

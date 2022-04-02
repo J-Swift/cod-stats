@@ -171,6 +171,26 @@
       _sessionsInfo = data.sessions.sort((a, b) => a.start - b.start);
 
       document.querySelector('.sessions-text').innerHTML = `${titlizedName} has played ${_sessionsInfo.length} sessions:`;
+    };
+
+    const loadUpdatedAt = async (playerName) => {
+      let playerFound = true;
+      const data = await fetch(`/data/output/sessions_${playerName}_updated_at.json`)
+        .then(response => {
+          if (response.status == 404) {
+            throw Error(response.statusText);
+          }
+          return response.text();
+        })
+        .then(it => JSON.parse(it))
+        .catch(e => {
+          playerFound = false;
+          console.error(e)
+        });
+
+      if (!playerFound) {
+        return;
+      }
 
       const updatedAt = new Date(data.updatedAt);
       const formatted = updatedAt.toLocaleString('en-US', { hour: "numeric", minute: "numeric" });
@@ -182,7 +202,7 @@
       const titlizedName = playerName[0].toUpperCase() + playerName.substr(1);
       document.querySelector('.profile-container--name').innerHTML = titlizedName;
       document.querySelector('.profile-container--image').src = `/resources/images/players/${playerName}.jpg`;
-      await Promise.all([loadPlayerStatsData(playerName), loadGamesData(playerName, titlizedName), loadSessionsData(playerName, titlizedName)]);
+      await Promise.all([loadPlayerStatsData(playerName), loadGamesData(playerName, titlizedName), loadSessionsData(playerName, titlizedName), loadUpdatedAt(playerName)]);
     };
 
     const hideEmptyModeMessage = () => {
