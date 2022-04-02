@@ -966,8 +966,7 @@ EOF
     local data_player_sessions_updated_at=$(
       sqlite3 "${dbfile}" <<-EOF
 SELECT json_object(
-  'updatedAt', strftime('%Y-%m-%dT%H:%M:%SZ', 'now'),
-  )
+  'updatedAt', strftime('%Y-%m-%dT%H:%M:%SZ', 'now')
 ) res;
 EOF
     )
