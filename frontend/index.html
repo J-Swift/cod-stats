@@ -404,11 +404,12 @@
       const path = `/data/output/${filename}.json`;
       const data = await fetch(path).then(it => it.text()).then(it => JSON.parse(it));
 
-      const cardWithConfig = (title, value, dateText) => {
+      const cardWithConfig = (title, value, dateText, playerName) => {
+        const imgPart = playerName == null ? '' : `<img class="card--player-img" src="resources/images/players/${playerName.toLowerCase()}.jpg">`;
         const html = `
 <div class="card--title">${title}</div>
 <div class="card--value">${value}</div>
-<div class="card--attribution card-deemphasize">${dateText}</div></div>
+<div class="card--attribution card-deemphasize">${imgPart}${dateText}</div>
         `;
 
         const card = document.createElement('div');
@@ -451,7 +452,7 @@
             }
           }
 
-          let card = cardWithConfig(rowData.title, meta.value, meta.player_id + dateText);
+          let card = cardWithConfig(rowData.title, meta.value, meta.player_id + dateText, meta.player_id);
           container.appendChild(card);
         } else {
           const names = Array.from(addedNames).sort((a, b) => a.localeCompare(b)).join(' / ');
