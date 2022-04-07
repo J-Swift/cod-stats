@@ -62,12 +62,15 @@
 
       text-align: center;
     }
+
     .player-stats--card-title {
       margin-bottom: 0.5rem;
     }
+
     .player-stats--card-section-name {
       padding: 1rem 0.5rem 0.25rem 0.5rem;
     }
+
     .player-stats--card-section-value {
       font-size: 1.2rem;
       padding: 0rem 0.5rem;
@@ -222,9 +225,12 @@
       const container = document.querySelector('.player-stats');
       const data = _playerStatsInfo;
 
-      const cardWithConfig = (name, metrics, placements) => {
+      const cardWithConfig = (name, numGames, metrics, placements) => {
         let html = `
-<h5 class='player-stats--card-title'>${name}</h5>
+<div style="display: flex; justify-content: space-between; align-items: center; text-align: center; line-height: 1.2">
+  <h5 class='player-stats--card-title'>${name}</h5>
+  <p class="card--games-text card-deemphasize">${numGames} ${numGames == 1 ? 'Game' : 'Games'}</p>
+</div>
 <div class='player-stats--card-section-container'>
 `;
 metrics.forEach(metric => {
@@ -258,7 +264,7 @@ html += `
       };
 
       data.forEach(timePeriod => {
-        const card = cardWithConfig(timePeriod.displayName, timePeriod.metrics, timePeriod.placements);
+        const card = cardWithConfig(timePeriod.displayName, timePeriod.numGames, timePeriod.metrics, timePeriod.placements);
         container.appendChild(card);
       });
     };
