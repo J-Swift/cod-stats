@@ -612,6 +612,7 @@ WITH
       id,
       desc,
       sort_order,
+      matchesPlayed,
       json_array(
         json_object(
           'name', 'K/D',
@@ -641,8 +642,7 @@ WITH
       desc,
       player_id,
       vgm.category,
-      round(100 * sum(teamPlacement)/cast(sum(numberOfTeams) as float), 2) avgPlacement,
-      sum(1) num_games
+      round(100 * sum(teamPlacement)/cast(sum(numberOfTeams) as float), 2) avgPlacement
     FROM vw_seasons vs
     JOIN
       vw_stats_wz vsw ON vsw.date_key >= vs.start AND vsw.date_key <= vs.end,
@@ -659,7 +659,6 @@ WITH
       id,
       desc,
       sort_order,
-      num_games,
       json_array(
         json_object(
           'name', 'Avg Solo',
@@ -692,7 +691,7 @@ SELECT
       'displayName', csr.desc,
       'metrics', json(csr.stats),
       'placements', json(cpr.stats),
-      'numGames', cpr.num_games
+      'numGames', csr.matchesPlayed
     )
   ) stats
 FROM cte_stats_rollup csr
