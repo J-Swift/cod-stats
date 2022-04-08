@@ -435,14 +435,14 @@
           let dateText = '';
 
           const isSameDay = (dt1, dt2) => {
-            const config = { year: 'numeric', month: 'short', day: 'numeric'};
+            const config = { year: 'numeric', month: 'short', day: 'numeric' };
             const d1 = new Date(dt1).toLocaleString('en-US', config);
             const d2 = new Date(dt2).toLocaleString('en-US', config);
             return d1 === d2;
           };
 
           if (meta.date_key != null) {
-            const config = { month: 'short', day: 'numeric'};
+            const config = { month: 'short', day: 'numeric' };
             const dt = new Date(meta.date_key).toLocaleDateString('en-US', config);
             if (meta.until_date_key == null || isSameDay(meta.date_key, meta.until_date_key)) {
               dateText = ` (${dt})`;
@@ -490,8 +490,8 @@
   <tbody>
 `
 
-teamStats.forEach(it => {
-  html += `
+        teamStats.forEach(it => {
+          html += `
     <tr>
       <td class="text-capitalize">${it.player_ids.split(',').join('&nbsp;/&nbsp;')}</td>
       <td>${it.avgPlacement}</td>
@@ -504,8 +504,8 @@ teamStats.forEach(it => {
       <td>${it.numWins}</td>
     </tr>
 `;
-});
-html += `
+        });
+        html += `
   </tbody>
 </table>
 `;
@@ -516,8 +516,8 @@ html += `
 
         const el = card.querySelector('.sortable-table');
         new Tablesort(el, {
-  descending: true
-});
+          descending: true
+        });
 
         return card;
       };
@@ -606,7 +606,7 @@ html += `
       const data = await fetch(path).then(it => it.text()).then(it => JSON.parse(it));
 
       const cardWithConfig = (playerText, numGames, numWins, top5s, top10s, gulagWins, gulagLosses, numKills, numDeaths, damageDone, maxKills, maxDamage) => {
-      const kdText = roundTo2(numDeaths == 0 ? numKills : numKills / numDeaths);
+        const kdText = roundTo2(numDeaths == 0 ? numKills : numKills / numDeaths);
         const html = `
 <div style="display: flex; justify-content: space-between; align-items: center; text-align: center; line-height: 1.2">
   <p class="card--player-text"><a href="/resources/pages/player.html?player=${playerText}">${playerText}</a></p>
@@ -642,7 +642,7 @@ html += `
     <p class="card--stats-stat-name">K/D</p>
   </div>
   <div class="card--stats-stat">
-    <p class="card--stats-stat-value">${roundTo2(100 * (gulagLosses == 0 ? 1 : gulagWins / (gulagLosses+gulagWins)))}%</p>
+    <p class="card--stats-stat-value">${roundTo2(100 * (gulagLosses == 0 ? 1 : gulagWins / (gulagLosses + gulagWins)))}%</p>
     <p class="card--stats-stat-name">Gulag Win %</p>
   </div>
 </div>

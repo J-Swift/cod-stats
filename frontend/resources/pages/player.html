@@ -135,7 +135,7 @@
           return entries.filter(it => it.stats != null).map(it => {
             const dt = new Date(it.date);
             const stats = it.stats;
-            return {...stats.raw, start: dt};
+            return { ...stats.raw, start: dt };
           });
         })
         .catch(e => {
@@ -233,27 +233,27 @@
 </div>
 <div class='player-stats--card-section-container'>
 `;
-metrics.forEach(metric => {
-  html += `
+        metrics.forEach(metric => {
+          html += `
   <div class='player-stats--card-section'>
     <p class='player-stats--card-section-name card-deemphasize'>${metric.name}</p>
     <p class='player-stats--card-section-value'>${metric.value}</p>
   </div>
 `
-});
-html += `
+        });
+        html += `
 </div>
 <div class='player-stats--card-section-container'>
 `;
-placements.forEach(placement => {
-  html += `
+        placements.forEach(placement => {
+          html += `
   <div class='player-stats--card-section'>
     <p class='player-stats--card-section-name card-deemphasize'>${placement.name}</p>
     <p class='player-stats--card-section-value'>${placement.value}</p>
   </div>
 `
-});
-html += `
+        });
+        html += `
 </div>
 `;
 
@@ -293,19 +293,19 @@ html += `
   <tbody>
 `;
 
-_gamesInfo.forEach(it => {
-  const dateText = it.start.toLocaleDateString('en-US', { month: 'short', day: 'numeric', hour: 'numeric', minute: 'numeric' });
-  const kdText = roundTo2(it.deaths == 0 ? it.kills : it.kills / it.deaths);
-  let gulagText = "&nbsp;";
-  let gulagClassName = "";
-  if (it.gulagKills > 0) {
-    gulagText = "&#x2714;&#xFE0E;"; // ✔;
-    gulagClassName = "gulag-win";
-  } else if (it.gulagDeaths > 0) {
-    gulagText = "&#x2718;&#xFE0E;"; // ✘;
-    gulagClassName = "gulag-loss";
-  }
-  html += `
+      _gamesInfo.forEach(it => {
+        const dateText = it.start.toLocaleDateString('en-US', { month: 'short', day: 'numeric', hour: 'numeric', minute: 'numeric' });
+        const kdText = roundTo2(it.deaths == 0 ? it.kills : it.kills / it.deaths);
+        let gulagText = "&nbsp;";
+        let gulagClassName = "";
+        if (it.gulagKills > 0) {
+          gulagText = "&#x2714;&#xFE0E;"; // ✔;
+          gulagClassName = "gulag-win";
+        } else if (it.gulagDeaths > 0) {
+          gulagText = "&#x2718;&#xFE0E;"; // ✘;
+          gulagClassName = "gulag-loss";
+        }
+        html += `
     <tr>
       <td data-sort="${it.start.toISOString()}" style="white-space: nowrap;">${dateText}</th>
       <td>${it.mode}</th>
@@ -317,8 +317,8 @@ _gamesInfo.forEach(it => {
       <td class="${gulagClassName}">${gulagText}</th>
     </tr>
 `;
-});
-html += `
+      });
+      html += `
   </tbody>
 `;
 
@@ -427,7 +427,7 @@ html += `
   </div>
   <div class='sessions-table-container'>
     <h4 class='sessions-text'>Loading recent sessions...</h3>
-    <div class='sessions'></div>
+      <div class='sessions'></div>
   </div>
 
   <span class='last-updated-text'>&nbsp;</span>
