@@ -5,11 +5,13 @@ const SSO = process.env.COD_SSO;
 const COD_DATADIR = process.env.COD_DATADIR;
 const OUTDIR = `${COD_DATADIR}/fetcher/output`;
 const RATE_LIMIT_FILE = `${COD_DATADIR}/fetcher/rate_limit_until.json`;
+const FAILURES_FILE = `${COD_DATADIR}/fetcher/failure_stats.json`;
 
 const codApiBatchLimit = 20;
 const codApiMatchResultLimit = 1000;
 const requestBatchLimit = 10;
 const initialRateLimitBackoffMins = 60;
+const maxFailuresBeforeCutoff = 50;
 
 // Typings
 
@@ -79,6 +81,43 @@ function deleteRateLimitInfo() {
   fs.unlinkSync(RATE_LIMIT_FILE);
 }
 
+// Failure tracking
+
+type FailureData = { [matchId: string]: number };
+class FailureInfo {
+  private readonly data: FailureData;
+
+  constructor() {
+    this.data = this.getFailureData() ?? {} as FailureData
+  }
+
+  count(matchId: string): number {
+    return this.data[matchId] ?? 0;
+  }
+
+  increment(matchId: string): number {
+    const newCount = (this.count(matchId) ?? 0) + 1;
+    this.data[matchId] = newCount;
+    return newCount;
+  }
+
+  remove(matchId: string) {
+    delete this.data[matchId];
+  }
+
+  writeToDisk() {
+    fs.writeFileSync(FAILURES_FILE, JSON.stringify(this.data));
+  }
+
+  private getFailureData(): FailureData | null {
+    if (!fs.existsSync(FAILURES_FILE)) {
+      return null;
+    }
+
+    return JSON.parse(fs.readFileSync(FAILURES_FILE, 'utf8')) as FailureData;
+  }
+};
+
 // DO WORK SON
 
 async function loginIfNeeded() {
@@ -111,7 +150,8 @@ async function downloadMatchesByBatch(
   matches: any[],
   playerMapping: PlayerMapping,
   mode: 'mp' | 'wz',
-  previouslyDownloadedMatches: Record<string, StoredMatchData[]>
+  previouslyDownloadedMatches: Record<string, StoredMatchData[]>,
+  failureInfo: FailureInfo
 ) {
   console.log(`downloadMatchesByBatch called for [${playerMapping.activisionTag}] [${mode}] [${matches.length}]`);
   let batch = [];
@@ -120,7 +160,7 @@ async function downloadMatchesByBatch(
     const downloadedPlayers = previouslyDownloadedMatches[match.matchId];
     const alreadyDownloadedForPlayer =
       downloadedPlayers && downloadedPlayers.find(it => it.playerUnoId === playerMapping.unoId) != null;
-    if (!alreadyDownloadedForPlayer) {
+    if (!alreadyDownloadedForPlayer && failureInfo.count("" + match.matchId) < maxFailuresBeforeCutoff) {
       // console.log(
       //   `[${match.matchId}] [${match.timestamp}] not already downloaded for [${playerMapping.unoId}] [${playerMapping.activisionTag}]`
       // );
@@ -157,7 +197,8 @@ async function downloadMatchesByBatch(
             resultBatch.forEach((result, idx) => {
               const matchForResult = batches[batchIdx][idx];
               if (isResultError(result)) {
-                console.error(`[${matchForResult.matchId} ${matchForResult.timestamp}] failed`);
+                const failCount = failureInfo.increment("" + matchForResult.matchId);
+                console.error(`[match-${matchForResult.matchId} ts-${matchForResult.timestamp}] failed (#${failCount})`);
                 console.error(result.error);
                 return;
               }
@@ -165,6 +206,7 @@ async function downloadMatchesByBatch(
                 `${OUTDIR}/match_${matchForResult.matchId}_${playerMapping.unoId}.json`,
                 JSON.stringify(result.results)
               );
+              failureInfo.remove("" + matchForResult.matchId);
               // console.log(`downloaded [${matchForResult.matchId}] for [${playerMapping.unoId}]`);
             });
           });
@@ -333,6 +375,7 @@ async function main(mappings: PlayerMapping[]): Promise<Result<any>> {
     await Promise.all(jobs);
 
     const previouslyDownloadedMatches = getAlreadyDownloadedMatches();
+    const failureInfo = new FailureInfo();
 
     for (let nameIdx = 0; nameIdx < playerNames.length; nameIdx++) {
       const name = playerNames[nameIdx];
@@ -341,10 +384,11 @@ async function main(mappings: PlayerMapping[]): Promise<Result<any>> {
         const playerMapping = mappings[mappingIdx];
         // NOTE(jpr): disable MP until we figure out how we want to surface the data
         // await downloadMatchesByBatch(results[name].multiplayer, playerMapping, 'mp', previouslyDownloadedMatches);
-        await downloadMatchesByBatch(results[name].warzone, playerMapping, 'wz', previouslyDownloadedMatches);
+        await downloadMatchesByBatch(results[name].warzone, playerMapping, 'wz', previouslyDownloadedMatches, failureInfo);
       }
     }
 
+    failureInfo.writeToDisk();
     deleteRateLimitInfo();
   } catch (err) {
     console.log('--------------------------------------------------------------------------------');
