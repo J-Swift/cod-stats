@@ -145,6 +145,10 @@ h6 {
   margin-right: 0.25rem;
 }
 
+.records .card--date-text {
+  vertical-align: middle;
+}
+
 .matches,
 .sessions {
   grid-template-columns: repeat(auto-fill, minmax(18em, 26.5em));
