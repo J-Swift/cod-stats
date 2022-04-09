@@ -1,0 +1,62 @@
+.recent-matches-table {
+  margin: auto;
+  margin-top: 1rem;
+  max-width: 800px;
+}
+
+.profile-container {
+  margin: auto;
+  margin-top: 2rem;
+  display: flex;
+  flex-flow: column;
+  align-items: center;
+}
+
+.profile-container--image {
+  background: white;
+  border-radius: 9999px;
+  width: 8rem;
+  height: 8rem;
+  margin-bottom: 1rem;
+}
+
+.games-table-container .gulag-win {
+  color: rgb(27, 139, 61);
+}
+
+.games-table-container .gulag-loss {
+  color: rgb(252, 72, 72);
+}
+
+.player-stats {
+  margin-top: 1rem;
+  display: flex;
+  flex-flow: row wrap;
+  justify-content: space-evenly;
+}
+
+.player-stats--card {
+  margin-top: 1rem;
+}
+
+.player-stats--card-section-container {
+  display: flex;
+  flex-flow: row nowrap;
+  justify-content: space-evenly;
+  align-items: flex-end;
+
+  text-align: center;
+}
+
+.player-stats--card-title {
+  margin-bottom: 0.5rem;
+}
+
+.player-stats--card-section-name {
+  padding: 1rem 0.5rem 0.25rem 0.5rem;
+}
+
+.player-stats--card-section-value {
+  font-size: 1.2rem;
+  padding: 0rem 0.5rem;
+}
