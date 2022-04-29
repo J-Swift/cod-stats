@@ -174,7 +174,7 @@ CREATE VIEW vw_seasons AS
         ('season16', 'Season BO6', '2021-10-07T00:00:00Z', '2021-12-07T23:59:59Z', 5),
         ('season21', 'Season VG1', '2021-12-08T00:00:00Z', '2022-03-22T15:59:59Z', 4),
         ('season22', 'Season VG2', '2022-03-22T16:00:00Z', '2022-04-27T15:59:59Z', 3),
-        ('season23', 'Season VG3', '2022-04-27T15:00:00Z', '2027-08-11T23:59:59Z', 2)
+        ('season23', 'Season VG3', '2022-04-27T16:00:00Z', '2027-08-11T23:59:59Z', 2)
     )
     SELECT * from cte_seasons
   )
