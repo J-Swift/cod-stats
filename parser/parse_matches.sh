@@ -139,6 +139,7 @@ CREATE VIEW vw_game_modes AS
         ('br_brduohwn',               'wz', 'wz_duos',         'Night Duos',             false, false, true),
         ('br_brhwntrios',             'wz', 'wz_trios',        'Night Trios',            false, false, true),
         ('br_brhwnquad',              'wz', 'wz_quads',        'Night Quads',            false, false, true),
+        ('br_wsow_br_trios',          'wz', 'wz_trios',        'WSOW Trios',             false, false, true),
 
         ('br_vg_royale_solo',         'wz', 'wz_solo',         'Vanguard Solo',          false, false, true),
         ('br_vg_royale_duos',         'wz', 'wz_duos',         'Vanguard Duos',          false, false, true),
